@@ -1,342 +1,325 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Multi-Timer, Stopwatch & Notes App</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Timers, Stopwatch & Notes App</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-        }
-        @media (max-width: 900px) {
-            .grid { grid-template-columns: 1fr; }
-        }
-        .card {
-            background: rgba(255,255,255,0.95);
-            padding: 32px 24px 24px 24px;
-            border-radius: 18px;
-            margin-bottom: 32px;
-            box-shadow: 0 6px 32px 0 rgba(80,120,200,0.10), 0 1.5px 6px 0 rgba(80,120,200,0.07);
-            text-align: center;
-            position: relative;
-        }
-        h2 {
-            margin-top: 0;
-            margin-bottom: 18px;
-            font-weight: 600;
-            color: #3b5998;
-            letter-spacing: 1px;
-        }
-        .timer-list {
-            margin-bottom: 16px;
-        }
-        .timer-block {
-            background: #fafdff;
-            border-radius: 12px;
-            box-shadow: 0 1px 6px #0001;
-            margin-bottom: 20px;
-            padding: 18px 14px 14px 14px;
-            position: relative;
-        }
-        .timer-controls {
-            margin-top: 10px;
-        }
-        .timer-label {
-            font-weight: bold;
-            color: #4b7bec;
-            font-size: 1.1em;
-        }
-.timer-inputs {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-.timer-inputs input[type="number"] {
-    width: 50px;
-    padding: 7px;
-    border-radius: 8px;
-    border: 1px solid #b5c6e0;
-    font-size: 1em;
-    background: #fafdff;
-    text-align: center;
-}
-
-        .timer-value {
-            font-size: 1.7em;
-            font-family: 'Consolas', 'Courier New', monospace;
-            color: #232a3b;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            margin-top: 0;
-        }
-        button {
-            background: linear-gradient(90deg, #4b7bec 0%, #5ad7f7 100%);
-            color: #fff;
-            border: none;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            margin: 4px 4px 0 0;
-            box-shadow: 0 2px 8px #4b7bec22;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        button:hover {
-            background: linear-gradient(90deg, #3867d6 0%, #48dbfb 100%);
-            box-shadow: 0 4px 16px #4b7bec33;
-        }
-        .add-timer-btn {
-            margin-top: 10px;
-            background: #20bf6b;
-        }
-        .add-timer-btn:hover {
-            background: #26de81;
-        }
-        #chatBox {
-            width: 100%;
-            height: 110px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            border: 1px solid #b5c6e0;
-            padding: 10px;
-            font-size: 1em;
-            background: #fafdff;
-            resize: none;
-            color: #232a3b;
-        }
-        #noteInput {
-            width: 70%;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #b5c6e0;
-            font-size: 1em;
-            background: #fafdff;
-            margin-bottom: 8px;
-        }
-        #noteInput:focus {
-            border: 1.5px solid #4b7bec;
-            outline: none;
-        }
-        .clear-notes-btn {
-            background: #e74c3c;
-            margin-left: 10px;
-        }
-        .clear-notes-btn:hover {
-            background: #c0392b;
+        body { background: #fafdff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+        .container { max-width: 540px; margin: 40px auto; background: #fff; border-radius: 18px; box-shadow: 0 6px 32px #b5c6e03d; padding: 32px 24px 24px 24px; }
+        h1 { text-align: center; margin-bottom: 24px; }
+        .section-title { margin-top: 32px; margin-bottom: 10px; font-size: 1.2em; font-weight: bold; letter-spacing: 1px; }
+        /* Timer block styles */
+        .timer-block { background: #f6f9fe; border-radius: 14px; box-shadow: 0 2px 8px #b5c6e026; margin-bottom: 22px; padding: 18px 12px 14px 12px; position: relative; }
+        .timer-label { font-weight: bold; margin-bottom: 8px; font-size: 1.1em; }
+        .timer-label button { background: #e74c3c; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 1.1em; cursor: pointer; margin-left: 8px; }
+        .timer-inputs { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .timer-inputs input[type="number"] { width: 48px; padding: 7px; border-radius: 8px; border: 1px solid #b5c6e0; font-size: 1em; background: #fafdff; text-align: center; }
+        .timer-canvas-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 12px; }
+        .timer-canvas-label { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6em; font-family: 'Consolas', monospace; color: #232a3b; pointer-events: none; user-select: none; }
+        .timer-controls { display: flex; justify-content: center; gap: 10px; }
+        .timer-controls button { background: #20bf6b; color: #fff; border: none; border-radius: 8px; padding: 7px 18px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+        .timer-controls button:hover { background: #17a35a; }
+        .timer-controls button:nth-child(2) { background: #f39c12; }
+        .timer-controls button:nth-child(2):hover { background: #d68910; }
+        .timer-controls button:nth-child(3) { background: #2980b9; }
+        .timer-controls button:nth-child(3):hover { background: #1c5a85; }
+        .add-timer-btn { display: block; margin: 0 auto 18px auto; background: #20bf6b; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1.1em; cursor: pointer; transition: background 0.2s; }
+        .add-timer-btn:hover { background: #17a35a; }
+        /* Stopwatch styles */
+        .stopwatch-block { background: #f6f9fe; border-radius: 14px; box-shadow: 0 2px 8px #b5c6e026; margin-bottom: 22px; padding: 18px 12px 14px 12px; }
+        .stopwatch-canvas-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 12px; }
+        .stopwatch-canvas-label { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6em; font-family: 'Consolas', monospace; color: #232a3b; pointer-events: none; user-select: none; }
+        .stopwatch-controls { display: flex; justify-content: center; gap: 10px; }
+        .stopwatch-controls button { background: #20bf6b; color: #fff; border: none; border-radius: 8px; padding: 7px 18px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+        .stopwatch-controls button:hover { background: #17a35a; }
+        .stopwatch-controls button:nth-child(2) { background: #f39c12; }
+        .stopwatch-controls button:nth-child(2):hover { background: #d68910; }
+        .stopwatch-controls button:nth-child(3) { background: #2980b9; }
+        .stopwatch-controls button:nth-child(3):hover { background: #1c5a85; }
+        /* Notes styles */
+        .notes-block { background: #f6f9fe; border-radius: 14px; box-shadow: 0 2px 8px #b5c6e026; margin-bottom: 22px; padding: 18px 12px 14px 12px; }
+        .notes-list { list-style: none; padding: 0; margin: 0; }
+        .note-item { background: #fff; border-radius: 8px; margin-bottom: 10px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
+        .note-text { flex: 1; margin-right: 10px; }
+        .note-actions button { background: #e74c3c; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.9em; cursor: pointer; margin-left: 4px; }
+        .note-actions button.edit-btn { background: #2980b9; }
+        .add-note-form { display: flex; gap: 8px; margin-top: 10px; }
+        .add-note-form input[type="text"] { flex: 1; padding: 7px; border-radius: 8px; border: 1px solid #b5c6e0; font-size: 1em; }
+        .add-note-form button { background: #20bf6b; color: #fff; border: none; border-radius: 8px; padding: 7px 18px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+        .add-note-form button:hover { background: #17a35a; }
+        @media (max-width: 600px) {
+            .container { padding: 12px 2vw; }
+            .timer-canvas-wrap, .stopwatch-canvas-wrap { width: 100px; height: 100px; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="grid">
-        <div class="card">
-            <h2>Timers</h2>
-            <div id="timerList" class="timer-list"></div>
-            <button class="add-timer-btn" onclick="addTimer()">+ Add Timer</button>
+    <div class="container">
+        <h1>Timers, Stopwatch & Notes</h1>
+
+        <!-- Stopwatch Section -->
+        <div class="section-title">Stopwatch</div>
+        <div class="stopwatch-block">
+            <div class="stopwatch-canvas-wrap">
+                <canvas id="stopwatchCanvas" width="140" height="140"></canvas>
+                <div class="stopwatch-canvas-label" id="stopwatchLabel">00:00:00.00</div>
+            </div>
+            <div class="stopwatch-controls">
+                <button onclick="startStopwatch()" id="swStartBtn">Start</button>
+                <button onclick="stopStopwatch()" id="swStopBtn" disabled>Stop</button>
+                <button onclick="resetStopwatch()">Reset</button>
+            </div>
         </div>
-        <div class="card">
-            <h2>Stopwatch</h2>
-            <canvas id="stopwatchCanvas" width="140" height="140"></canvas>
-            <div class="stopwatch-value" id="stopwatchValue">00:00</div>
-            <button onclick="startStopwatch()">Start</button>
-            <button onclick="stopStopwatch()">Stop</button>
-            <button onclick="resetStopwatch()">Reset</button>
+
+        <!-- Timer Section -->
+        <div class="section-title">Timers</div>
+        <button class="add-timer-btn" onclick="addTimer()">+ Add Timer</button>
+        <div id="timerList"></div>
+
+        <!-- Notes Section -->
+        <div class="section-title">Notes</div>
+        <div class="notes-block">
+            <ul class="notes-list" id="notesList"></ul>
+            <form class="add-note-form" onsubmit="addNote(event)">
+                <input type="text" id="noteInput" placeholder="Add a note..." required>
+                <button type="submit">Add</button>
+            </form>
         </div>
     </div>
-    <div class="card">
-        <h2>Notes</h2>
-        <textarea id="chatBox" readonly></textarea><br>
-        <input type="text" id="noteInput" placeholder="Type your note...">
-        <button onclick="sendNote()">Send</button>
-        <button class="clear-notes-btn" onclick="clearNotes()">Clear Notes</button>
-    </div>
-</div>
-<script>
-// --- Multiple Timers ---
-let timerIdCounter = 0;
-let timers = {};
 
-function addTimer() {
-    const id = ++timerIdCounter;
-    timers[id] = {
-        interval: null,
-        total: 0,
-        left: 0,
-        running: false
-    };
-    renderTimers();
-}
-
-function removeTimer(id) {
-    stopTimer(id);
-    delete timers[id];
-    renderTimers();
-}
-
-function renderTimers() {
-    const timerList = document.getElementById('timerList');
-    timerList.innerHTML = '';
-    Object.keys(timers).forEach(id => {
-        const t = timers[id];
-        const block = document.createElement('div');
-        block.className = 'timer-block';
-        block.innerHTML = `
-            <div class="timer-label">Timer #${id}
-                <button style="float:right;background:#e74c3c;" onclick="removeTimer(${id})" title="Remove Timer">&times;</button>
-            </div>
-            <div class="timer-inputs">
-                <input type="number" id="h_${id}" placeholder="HH" min="0" max="99" value="0">
-                <input type="number" id="m_${id}" placeholder="MM" min="0" max="59" value="0">
-                <input type="number" id="s_${id}" placeholder="SS" min="0" max="59" value="0">
-            </div>
-            <div class="timer-value" id="timerValue_${id}">${formatTimeHMS(t.left || 0)}</div>
-            <div class="timer-controls">
-                <button onclick="startTimer(${id})">Start</button>
-                <button onclick="stopTimer(${id})">Stop</button>
-                <button onclick="resetTimer(${id})">Reset</button>
-            </div>
-        `;
-        timerList.appendChild(block);
-    });
-}
-
-function formatTimeHMS(sec) {
-    let h = Math.floor(sec / 3600);
-    let m = Math.floor((sec % 3600) / 60);
-    let s = sec % 60;
-    return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-}
-
-function startTimer(id) {
-    stopTimer(id);
-    const h = parseInt(document.getElementById(`h_${id}`).value) || 0;
-    const m = parseInt(document.getElementById(`m_${id}`).value) || 0;
-    const s = parseInt(document.getElementById(`s_${id}`).value) || 0;
-    const total = h*3600 + m*60 + s;
-    if (total === 0) return;
-    timers[id].total = total;
-    timers[id].left = total;
-    timers[id].running = true;
-    document.getElementById(`timerValue_${id}`).textContent = formatTimeHMS(timers[id].left);
-    timers[id].interval = setInterval(() => {
-        timers[id].left--;
-        document.getElementById(`timerValue_${id}`).textContent = formatTimeHMS(timers[id].left);
-        if (timers[id].left <= 0) {
-            stopTimer(id);
-            document.getElementById(`timerValue_${id}`).textContent = "00:00:00";
+    <script>
+        // ----------------- STOPWATCH -----------------
+        let swStartTime = 0, swElapsed = 0, swInterval = null, swRunning = false;
+        function formatStopwatch(ms) {
+            let cs = Math.floor((ms % 1000) / 10);
+            let s = Math.floor(ms / 1000) % 60;
+            let m = Math.floor(ms / 60000) % 60;
+            let h = Math.floor(ms / 3600000);
+            return (h > 0 ? String(h).padStart(2,'0')+':' : '') +
+                   String(m).padStart(2,'0')+':' + String(s).padStart(2,'0') + '.' + String(cs).padStart(2,'0');
         }
-    }, 1000);
-}
+        function drawStopwatchCircle(ms) {
+            const canvas = document.getElementById('stopwatchCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Background
+            ctx.beginPath();
+            ctx.arc(70, 70, 58, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#e3eafc';
+            ctx.lineWidth = 12;
+            ctx.stroke();
+            // Progress
+            let percent = ((ms % 60000) / 60000); // loop every minute
+            ctx.beginPath();
+            ctx.arc(70, 70, 58, -Math.PI/2, (2 * Math.PI * percent) - Math.PI/2, false);
+            ctx.strokeStyle = '#20bf6b';
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            // Label
+            document.getElementById('stopwatchLabel').textContent = formatStopwatch(ms);
+        }
+        function updateStopwatch() {
+            if (swRunning) {
+                swElapsed = Date.now() - swStartTime;
+                drawStopwatchCircle(swElapsed);
+                requestAnimationFrame(updateStopwatch);
+            }
+        }
+        function startStopwatch() {
+            if (swRunning) return;
+            swStartTime = Date.now() - swElapsed;
+            swRunning = true;
+            document.getElementById('swStartBtn').disabled = true;
+            document.getElementById('swStopBtn').disabled = false;
+            updateStopwatch();
+        }
+        function stopStopwatch() {
+            if (!swRunning) return;
+            swElapsed = Date.now() - swStartTime;
+            swRunning = false;
+            document.getElementById('swStartBtn').disabled = false;
+            document.getElementById('swStopBtn').disabled = true;
+            drawStopwatchCircle(swElapsed);
+        }
+        function resetStopwatch() {
+            swRunning = false;
+            swElapsed = 0;
+            document.getElementById('swStartBtn').disabled = false;
+            document.getElementById('swStopBtn').disabled = true;
+            drawStopwatchCircle(0);
+        }
+        // Initialize
+        drawStopwatchCircle(0);
 
-function stopTimer(id) {
-    if (timers[id].interval) {
-        clearInterval(timers[id].interval);
-        timers[id].interval = null;
-        timers[id].running = false;
-    }
-}
+        // ----------------- TIMERS -----------------
+        let timers = {};
+        let timerCounter = 1;
+        function addTimer() {
+            const id = timerCounter++;
+            timers[id] = { id, total: 0, left: 0, interval: null, running: false };
+            renderTimers();
+        }
+        function removeTimer(id) {
+            stopTimer(id);
+            delete timers[id];
+            renderTimers();
+        }
+        function formatTimeHMS(sec) {
+            sec = Math.max(0, sec|0);
+            let h = Math.floor(sec/3600);
+            let m = Math.floor((sec%3600)/60);
+            let s = sec%60;
+            return [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+        }
+        function renderTimers() {
+            const timerList = document.getElementById('timerList');
+            timerList.innerHTML = '';
+            Object.keys(timers).forEach(id => {
+                const t = timers[id];
+                const block = document.createElement('div');
+                block.className = 'timer-block';
+                block.innerHTML = `
+                    <div class="timer-label">
+                        Timer #${id}
+                        <button onclick="removeTimer(${id})" title="Remove Timer">&times;</button>
+                    </div>
+                    <div class="timer-inputs">
+                        <input type="number" id="h_${id}" placeholder="HH" min="0" max="99" value="0" ${t.running ? 'disabled' : ''}>
+                        <input type="number" id="m_${id}" placeholder="MM" min="0" max="59" value="0" ${t.running ? 'disabled' : ''}>
+                        <input type="number" id="s_${id}" placeholder="SS" min="0" max="59" value="0" ${t.running ? 'disabled' : ''}>
+                    </div>
+                    <div class="timer-canvas-wrap">
+                        <canvas id="timerCanvas_${id}" width="140" height="140"></canvas>
+                        <div class="timer-canvas-label" id="timerLabel_${id}">${formatTimeHMS(t.left || 0)}</div>
+                    </div>
+                    <div class="timer-controls">
+                        <button onclick="startTimer(${id})" ${t.running ? 'disabled' : ''}>Start</button>
+                        <button onclick="stopTimer(${id})" ${!t.running ? 'disabled' : ''}>Stop</button>
+                        <button onclick="resetTimer(${id})">Reset</button>
+                    </div>
+                `;
+                timerList.appendChild(block);
+                drawTimerCircle(id, t.left || 0, t.total || 1);
+            });
+        }
+        function drawTimerCircle(id, left, total) {
+            const canvas = document.getElementById(`timerCanvas_${id}`);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const percent = total > 0 ? left / total : 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Background
+            ctx.beginPath();
+            ctx.arc(70, 70, 58, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#e3eafc';
+            ctx.lineWidth = 12;
+            ctx.stroke();
+            // Progress arc
+            ctx.beginPath();
+            ctx.arc(70, 70, 58, -Math.PI/2, (2 * Math.PI * percent) - Math.PI/2, false);
+            ctx.strokeStyle = '#20bf6b';
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            // Label
+            const label = document.getElementById(`timerLabel_${id}`);
+            if (label) label.textContent = formatTimeHMS(left);
+        }
+        function startTimer(id) {
+            stopTimer(id);
+            const h = parseInt(document.getElementById(`h_${id}`).value) || 0;
+            const m = parseInt(document.getElementById(`m_${id}`).value) || 0;
+            const s = parseInt(document.getElementById(`s_${id}`).value) || 0;
+            const total = h*3600 + m*60 + s;
+            if (total === 0) return;
+            timers[id].total = total;
+            timers[id].left = total;
+            timers[id].running = true;
+            renderTimers(); // disables inputs, updates buttons
+            timers[id].interval = setInterval(() => {
+                timers[id].left--;
+                drawTimerCircle(id, timers[id].left, timers[id].total);
+                if (timers[id].left <= 0) {
+                    stopTimer(id);
+                    drawTimerCircle(id, 0, timers[id].total);
+                }
+            }, 1000);
+        }
+        function stopTimer(id) {
+            if (timers[id] && timers[id].interval) {
+                clearInterval(timers[id].interval);
+                timers[id].interval = null;
+                timers[id].running = false;
+                renderTimers();
+            }
+        }
+        function resetTimer(id) {
+            stopTimer(id);
+            timers[id].left = timers[id].total || 0;
+            renderTimers();
+        }
+        // Add the first timer on load
+        addTimer();
 
-function resetTimer(id) {
-    stopTimer(id);
-    timers[id].left = timers[id].total;
-    document.getElementById(`timerValue_${id}`).textContent = formatTimeHMS(timers[id].left || 0);
-}
-
-// --- Stopwatch ---
-let stopwatchInterval, stopwatchSec = 0;
-function drawCircle(canvasId, percent, color, label) {
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.arc(70, 70, 58, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#e3eafc';
-    ctx.lineWidth = 12;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(70, 70, 58, -Math.PI/2, (2 * Math.PI * percent) - Math.PI/2);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 12;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    if(label) {
-        ctx.font = '18px Segoe UI, Arial';
-        ctx.fillStyle = '#4b7bec';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(label, 70, 70);
-    }
-}
-function formatTime(sec) {
-    return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0');
-}
-function startStopwatch() {
-    clearInterval(stopwatchInterval);
-    stopwatchInterval = setInterval(() => {
-        stopwatchSec++;
-        drawCircle('stopwatchCanvas', (stopwatchSec%60)/60, '#20bf6b');
-        document.getElementById('stopwatchValue').textContent = formatTime(stopwatchSec);
-    }, 1000);
-}
-function stopStopwatch() {
-    clearInterval(stopwatchInterval);
-}
-function resetStopwatch() {
-    clearInterval(stopwatchInterval);
-    stopwatchSec = 0;
-    drawCircle('stopwatchCanvas', 0, '#20bf6b');
-    document.getElementById('stopwatchValue').textContent = '00:00';
-}
-drawCircle('stopwatchCanvas', 0, '#20bf6b');
-
-// --- Notes (shared via localStorage) ---
-function appendNote(msg) {
-    const chatBox = document.getElementById('chatBox');
-    chatBox.value += msg + '\n';
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-function sendNote() {
-    const input = document.getElementById('noteInput');
-    if(input.value.trim()) {
-        const msg = 'User: ' + input.value.trim();
-        appendNote(msg);
-        localStorage.setItem('note', msg + '|' + Date.now());
-        input.value = '';
-    }
-}
-function clearNotes() {
-    document.getElementById('chatBox').value = '';
-    localStorage.setItem('clearNotes', Date.now());
-}
-window.addEventListener('storage', function(e) {
-    if(e.key === 'note' && e.newValue) {
-        const msg = e.newValue.split('|')[0];
-        appendNote(msg);
-    }
-    if(e.key === 'clearNotes') {
-        document.getElementById('chatBox').value = '';
-    }
-});
-
-// --- Initialize with one timer ---
-addTimer();
-</script>
+        // ----------------- NOTES -----------------
+        let notes = [];
+        function renderNotes() {
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = '';
+            notes.forEach((note, idx) => {
+                const li = document.createElement('li');
+                li.className = 'note-item';
+                if (note.editing) {
+                    li.innerHTML = `
+                        <input type="text" value="${note.text.replace(/"/g, '&quot;')}" id="editNote_${idx}" style="flex:1; margin-right:8px;">
+                        <div class="note-actions">
+                            <button class="edit-btn" onclick="saveEditNote(${idx})">Save</button>
+                            <button onclick="deleteNote(${idx})">Delete</button>
+                        </div>
+                    `;
+                } else {
+                    li.innerHTML = `
+                        <span class="note-text">${note.text}</span>
+                        <div class="note-actions">
+                            <button class="edit-btn" onclick="editNote(${idx})">Edit</button>
+                            <button onclick="deleteNote(${idx})">Delete</button>
+                        </div>
+                    `;
+                }
+                notesList.appendChild(li);
+            });
+        }
+        function addNote(event) {
+            event.preventDefault();
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            if (text) {
+                notes.push({ text, editing: false });
+                input.value = '';
+                renderNotes();
+            }
+        }
+        function editNote(idx) {
+            notes[idx].editing = true;
+            renderNotes();
+            document.getElementById(`editNote_${idx}`).focus();
+        }
+        function saveEditNote(idx) {
+            const input = document.getElementById(`editNote_${idx}`);
+            const text = input.value.trim();
+            if (text) {
+                notes[idx].text = text;
+                notes[idx].editing = false;
+                renderNotes();
+            }
+        }
+        function deleteNote(idx) {
+            notes.splice(idx, 1);
+            renderNotes();
+        }
+        // Initial render
+        renderNotes();
+    </script>
 </body>
 </html>
