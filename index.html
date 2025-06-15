@@ -60,16 +60,23 @@
             color: #4b7bec;
             font-size: 1.1em;
         }
-        .timer-inputs input[type="number"] {
-            width: 25px;
-            padding: 7px;
-            border-radius: 8px;
-            border: 1px solid #b5c6e0;
-            font-size: 1em;
-            background: #fafdff;
-            text-align: center;
-            margin-right: 0px;
-        }
+.timer-inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.timer-inputs input[type="number"] {
+    width: 50px;
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid #b5c6e0;
+    font-size: 1em;
+    background: #fafdff;
+    text-align: center;
+}
+
         .timer-value {
             font-size: 1.7em;
             font-family: 'Consolas', 'Courier New', monospace;
